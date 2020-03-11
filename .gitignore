@@ -30,3 +30,6 @@
 /AuthenticationServer/obj/Debug/netcoreapp3.1/AuthenticationServer.dll
 /AuthenticationServer/obj/Debug/netcoreapp3.1/AuthenticationServer.csproj.FileListAbsolute.txt
 /AuthenticationServer/obj/Debug/netcoreapp3.1/AuthenticationServer.csproj.CopyComplete
+/AuthenticationServer.Infrastructure/Migrations/AppIdentityDb
+/AuthenticationServer.Infrastructure/Migrations
+/AuthenticationServer.Infrastructure/obj/AuthenticationServer.Infrastructure.csproj.EntityFrameworkCore.targets

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AuthenticationServer.Core.Entities
 {
-    class SignUpRequest
+    public class SignUpRequest
     {
     }
 }

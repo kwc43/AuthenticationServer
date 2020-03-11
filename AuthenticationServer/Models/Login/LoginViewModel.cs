@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace AuthenticationServer.Models.Login
 {
-    public class LoginViewModel
+    public class LoginViewModel : LoginInputModel
     {
+        public bool AllowRememberLogin { get; set; } = true;
+        public bool NewAccount { get; set; }
     }
 }

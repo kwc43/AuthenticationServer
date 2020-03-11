@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace AuthenticationServer.Core.Entities
 {
-    class AppUser
+    public class AppUser : IdentityUser
     {
+        public string FullName { get; set; }
     }
 }
