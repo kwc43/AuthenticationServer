@@ -15,16 +15,15 @@
             </div>
         }
 
-
         <fieldset>
             <div>
                 <label asp-for="Username"></label>
-                <input placeholder="Username" asp-for="Username" autofocus/>
+                <input placeholder="Username" asp-for="Username" autofocus>
             </div>
             
             <div>
                 <label asp-for="Password"></label>
-                <input type="password" placeholder="Password" asp-for="Password" autofocus/>
+                <input type="password" placeholder="Password" asp-for="Password" autofocus>
             </div>
             
             <div>
@@ -38,7 +37,7 @@
                 <button name="button" value="login">Login</button>
                 <button name="button" value="cancel">Cancel</button>
             </div>
-
         </fieldset>
+        <partial name="_ValidationSummary"/>
     </form>
 </div>

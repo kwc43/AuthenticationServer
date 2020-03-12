@@ -31,8 +31,17 @@ namespace AuthenticationServer
         {
             return new List<Client>
             {
-                new Client
-                {
+                new Client {
+                    RequireConsent = false,
+                    ClientId = "js_test_client",
+                    ClientName = "Javascript Test Client",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+                    AllowedScopes = { "openid", "profile", "email", "api.read" },
+                    RedirectUris = {$"http://{devHost}/test-client/callback.html"},
+                    AllowedCorsOrigins = {$"http://{devHost}"},
+                    AccessTokenLifetime = (int)TimeSpan.FromMinutes(120).TotalSeconds
                 }
             };
         }

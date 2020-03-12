@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using AuthenticationServer.Core.Entities;
 using AuthenticationServer.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AuthenticationServer
 {
@@ -46,8 +44,6 @@ namespace AuthenticationServer
         {
             AddDbContext(services);
 
-            services.AddControllersWithViews();
-
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppIdentityDbContext>();
 
@@ -70,6 +66,13 @@ namespace AuthenticationServer
             {
                 throw new Exception("Need to configure key material");
             }
+
+            services.ConfigureApplicationCookie((obj) =>
+            {
+                obj.LoginPath = "/Accounts/Login";
+            });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
         }
 
@@ -96,6 +99,9 @@ namespace AuthenticationServer
             });
 
             app.UseRouting();
+            app.UseStaticFiles();
+
+            app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.UseIdentityServer();
 
