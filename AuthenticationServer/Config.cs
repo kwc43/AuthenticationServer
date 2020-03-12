@@ -27,7 +27,7 @@ namespace AuthenticationServer
             };
         }
 
-        public static IEnumerable<Client> GetClients()
+        public static IEnumerable<Client> GetClients(string devHost = "")
         {
             return new List<Client>
             {

@@ -19,7 +19,8 @@ namespace AuthenticationServer
 {
     public class Startup
     {
-        private readonly string _connectionStringName = "Default";
+        private const string ConnectionStringName = "Default";
+        private const string Address = "AppSettings:Address";
 
         public IConfiguration Configuration { get; }
 
@@ -38,7 +39,7 @@ namespace AuthenticationServer
 
         protected virtual void ConfigureDatabase(DbContextOptionsBuilder contextOptionsBuilder)
         {
-            contextOptionsBuilder.UseSqlServer(Configuration.GetConnectionString(_connectionStringName));
+            contextOptionsBuilder.UseSqlServer(Configuration.GetConnectionString(ConnectionStringName));
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -58,7 +59,7 @@ namespace AuthenticationServer
             })
             .AddInMemoryIdentityResources(Config.GetIdentityResources())
             .AddInMemoryApiResources(Config.GetApiResources())
-            .AddInMemoryClients(Config.GetClients())
+            .AddInMemoryClients(Config.GetClients(Configuration.GetValue(Address, "")))
             .AddAspNetIdentity<AppUser>();
 
             if (Environment.IsDevelopment())

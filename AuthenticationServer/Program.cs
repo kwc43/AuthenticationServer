@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace AuthenticationServer
 {
@@ -20,6 +16,15 @@ namespace AuthenticationServer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    if (webBuilder.GetSetting("environment") == "Development")
+                    {
+                        webBuilder.UseKestrel((host, options) =>
+                        {
+                            options.Listen(
+                                IPEndPoint.Parse(host.Configuration.GetValue("AppSettings:Address", "")));
+                        });
+                    }
+
                     webBuilder.UseStartup<Startup>();
                 });
     }
