@@ -1,10 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace AuthenticationServer.Core.Entities
 {
-    class AccountOptions
+    public class AccountOptions
     {
+        public static bool AllowLocalLogin = true;
+        public static bool AllowRememberLogin = true;
+        public static TimeSpan RememberMeLoginDuration = TimeSpan.FromDays(30);
+
+        public static string InvalidCredentialsErrorMessage = "Invalid username or password";
     }
 }

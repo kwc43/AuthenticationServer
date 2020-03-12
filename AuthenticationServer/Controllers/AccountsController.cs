@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AuthenticationServer.Controllers
 {
@@ -88,20 +89,27 @@ namespace AuthenticationServer.Controllers
                 {
                     await _eventService.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.FullName));
 
-                    await HttpContext.SignInAsync(user.Id, user.UserName);
+                    var authenticationProperties = AccountOptions.AllowRememberLogin && model.RememberLogin
+                        ? new AuthenticationProperties
+                        {
+                            IsPersistent = true,
+                            ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
+                        }
+                        : null;
 
-                    if (context != null)
-                    {
-                        return Redirect(model.ReturnUrl);
-                    }
+                    await HttpContext.SignInAsync(user.Id, user.UserName, authenticationProperties);
 
-                    return Url.IsLocalUrl(model.ReturnUrl) ? Redirect(model.ReturnUrl) :
-                        string.IsNullOrEmpty(model.ReturnUrl) ? Redirect("~/") :
-                        throw new Exception("invalid return URL");
+                    return context != null 
+                        ? Redirect(model.ReturnUrl) 
+                        : Url.IsLocalUrl(model.ReturnUrl) 
+                            ? Redirect(model.ReturnUrl) 
+                            : string.IsNullOrEmpty(model.ReturnUrl) 
+                                ? Redirect("~/")
+                                : throw new Exception("invalid return URL");
                 }
 
-                await _eventService.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
-                ModelState.AddModelError(string.Empty, "Invalid Credentials");
+                await _eventService.RaiseAsync(new UserLoginFailureEvent(model.Username, AccountOptions.InvalidCredentialsErrorMessage));
+                ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
             var vm = new LoginViewModel
@@ -116,7 +124,7 @@ namespace AuthenticationServer.Controllers
         private static string GetUserName(string returnUrl)
         {
             const string parameter = "&userName=";
-            return returnUrl.Contains("userName") ? returnUrl.Substring(returnUrl.IndexOf("&userName=") + parameter.Length) : null;
+            return returnUrl.Contains("userName") ? returnUrl.Substring(returnUrl.IndexOf("&userName=", StringComparison.Ordinal) + parameter.Length) : null;
         }
     }
 }
