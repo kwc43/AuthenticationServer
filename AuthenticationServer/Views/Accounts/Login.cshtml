@@ -1,20 +1,30 @@
-﻿<h1>Login Page</h1>
+﻿@model AuthenticationServer.Models.Login.LoginViewModel
+
+<h1>Login Page</h1>
 
 <div>
     <h2> Local Login </h2>
     
-    <form asp-route="" >
-        <input type="hidden" asp-for=""/>
+    <form asp-route="Login" >
+        <input type="hidden" asp-for="ReturnUrl"/>
         
+        @if (Model.NewAccount)
+        {
+            <div>
+                Account created successfully!
+            </div>
+        }
+
+
         <fieldset>
             <div>
-                <label asp-for=""></label>
-                <input placeholder="Username" asp-for="" autofocus="" />
+                <label asp-for="Username"></label>
+                <input placeholder="Username" asp-for="Username" autofocus/>
             </div>
             
             <div>
-                <label asp-for=""></label>
-                <input type="password" placeholder="Password" asp-for="" autofocus="" />
+                <label asp-for="Password"></label>
+                <input type="password" placeholder="Password" asp-for="Password" autofocus/>
             </div>
             
             <div>

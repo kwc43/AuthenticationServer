@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AuthenticationServer.Core.Entities;
+﻿using AuthenticationServer.Core.Entities;
 using AuthenticationServer.Infrastructure.Data;
+using AuthenticationServer.Models.Login;
 using AuthenticationServer.Models.Register;
+using IdentityServer4.Events;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace AuthenticationServer.Controllers
 {
@@ -61,9 +62,61 @@ namespace AuthenticationServer.Controllers
         }
 
         [HttpGet]
-        public  IActionResult Login()
+        public  async Task<IActionResult> Login(string returnUrl)
         {
-            return View();
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+
+            return View(new LoginViewModel
+                {
+                    ReturnUrl = returnUrl,
+                    Username = GetUserName(returnUrl) ?? context?.LoginHint,
+                    NewAccount = returnUrl.Contains("newAccount")
+                });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginInputModel model)
+        {
+            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(model.Username);
+
+                if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+                {
+                    await _eventService.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.FullName));
+
+                    await HttpContext.SignInAsync(user.Id, user.UserName);
+
+                    if (context != null)
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+
+                    return Url.IsLocalUrl(model.ReturnUrl) ? Redirect(model.ReturnUrl) :
+                        string.IsNullOrEmpty(model.ReturnUrl) ? Redirect("~/") :
+                        throw new Exception("invalid return URL");
+                }
+
+                await _eventService.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
+                ModelState.AddModelError(string.Empty, "Invalid Credentials");
+            }
+
+            var vm = new LoginViewModel
+            {
+                Username = model.Username,
+                RememberLogin = model.RememberLogin
+            };
+
+            return View(vm);
+        }
+
+        private static string GetUserName(string returnUrl)
+        {
+            const string parameter = "&userName=";
+            return returnUrl.Contains("userName") ? returnUrl.Substring(returnUrl.IndexOf("&userName=") + parameter.Length) : null;
         }
     }
 }
