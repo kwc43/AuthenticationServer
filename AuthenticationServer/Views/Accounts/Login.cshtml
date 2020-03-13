@@ -1,13 +1,10 @@
 ﻿@model AuthenticationServer.Models.Login.LoginViewModel
 
 <h1>Login Page</h1>
-
 <div>
-    <h2> Local Login </h2>
-    
-    <form asp-route="Login" >
-        <input type="hidden" asp-for="ReturnUrl"/>
-        
+    <form asp-route="Login">
+        <input type="hidden" asp-for="ReturnUrl" />
+
         @if (Model.NewAccount)
         {
             <div>
@@ -20,17 +17,10 @@
                 <label asp-for="Username"></label>
                 <input placeholder="Username" asp-for="Username" autofocus>
             </div>
-            
+
             <div>
                 <label asp-for="Password"></label>
                 <input type="password" placeholder="Password" asp-for="Password" autofocus>
-            </div>
-            
-            <div>
-                <label asp-for="">
-                    <input type="checkbox" asp-for="">
-                    <strong>Remember My Login</strong>
-                </label>
             </div>
 
             <div>
@@ -38,6 +28,6 @@
                 <button name="button" value="cancel">Cancel</button>
             </div>
         </fieldset>
-        <partial name="_ValidationSummary"/>
+        <partial name="_ValidationSummary" />
     </form>
 </div>

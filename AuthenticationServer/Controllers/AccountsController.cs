@@ -68,11 +68,11 @@ namespace AuthenticationServer.Controllers
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
 
             return View(new LoginViewModel
-                {
-                    ReturnUrl = returnUrl,
-                    Username = GetUserName(returnUrl) ?? context?.LoginHint,
-                    NewAccount = returnUrl.Contains("newAccount")
-                });
+            {
+                ReturnUrl = returnUrl,
+                Username = GetUserName(returnUrl) ?? context?.LoginHint,
+                NewAccount = returnUrl.Contains("newAccount")
+            });
         }
 
         [HttpPost]
