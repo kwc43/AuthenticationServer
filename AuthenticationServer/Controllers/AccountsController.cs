@@ -83,7 +83,7 @@ namespace AuthenticationServer.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByIdAsync(model.Username);
+                var user = await _userManager.FindByNameAsync(model.Username);
 
                 if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
                 {

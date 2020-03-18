@@ -15,7 +15,8 @@ namespace AuthenticationServer
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
-                {
+                { 
+                    /*
                     if (webBuilder.GetSetting("environment") == "Development")
                     {
                         webBuilder.UseKestrel((host, options) =>
@@ -24,7 +25,7 @@ namespace AuthenticationServer
                                 IPEndPoint.Parse(host.Configuration.GetValue("AppSettings:Address", "")));
                         });
                     }
-
+                    */
                     webBuilder.UseStartup<Startup>();
                 });
     }
