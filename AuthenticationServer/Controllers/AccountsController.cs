@@ -121,6 +121,14 @@ namespace AuthenticationServer.Controllers
             return View(vm);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Logout(string logoutId)
+        {
+            await _signInManager.SignOutAsync();
+            var context = await _interaction.GetLogoutContextAsync(logoutId);
+            return Redirect(context.PostLogoutRedirectUri);
+        }
+
         private static string GetUserName(string returnUrl)
         {
             const string parameter = "&userName=";

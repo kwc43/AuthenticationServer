@@ -70,6 +70,7 @@ namespace AuthenticationServer
             services.ConfigureApplicationCookie((obj) =>
             {
                 obj.LoginPath = "/Accounts/Login";
+                obj.LogoutPath = "/Accounts/Logout";
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
